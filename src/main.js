@@ -91,7 +91,7 @@ async function OCRImg(file) {
 
   let textMatch = {
     no: extractField(cleanText, "NO"),
-    forTo: extractField(cleanText, "FORTO"),
+    "for/To": extractField(cleanText, "FORTO"),
     to: extractField(cleanText, "TO"),
     attention: extractField(cleanText, "ATTENTION"),
     from: extractField(cleanText, "FROM"),
