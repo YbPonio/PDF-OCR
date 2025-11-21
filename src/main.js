@@ -8,15 +8,7 @@ document.getElementById("sendBtn").addEventListener("click", checkFile);
 let result = document.getElementById("result");
 let fileInfo = document.getElementById("uploadInfo");
 
-let labels = [
-  "FORTO",
-  "FOR",
-  "TO",
-  "FROM",
-  "SUBJECT",
-  "DATE",
-  "ATTENTION",
-];
+let labels = ["FORTO", "FOR", "TO", "FROM", "SUBJECT", "DATE", "ATTENTION"];
 
 function checkFile() {
   let input = document.getElementById("upload");
@@ -83,7 +75,7 @@ async function OCRImg(file) {
 
   let cleanText = text
     .replace(/\r/g, "")
-    .replace(/[^a-zA-Z0-9.,\-;?! \n]/g, "")
+    .replace(/[^a-zA-Z0-9.,\-?! \n]/g, "")
     .replace(/:/g, "")
     .replace(/ {2,}/g, " ")
     .replace(/\n{3,}/g, "\n\n")
@@ -98,6 +90,8 @@ async function OCRImg(file) {
     date: extractField(cleanText, "DATE"),
     subject: extractField(cleanText, "SUBJECT"),
   };
+
+  console.log(JSON.stringify(cleanText));
 
   if (textMatch) {
     fileInfo.innerHTML = "";
@@ -143,7 +137,16 @@ function extractField(text, label) {
   let stopMatch = remaining.match(stopRegex);
 
   if (stopMatch) {
-    endIndex = stopMatch.index;
+    if (label === "SUBJECT" && stopMatch[0].toUpperCase().indexOf("DATE") === -1) {
+      let newlineIndex = remaining.indexOf("\n");
+      if (newlineIndex !== -1) {
+      endIndex = newlineIndex;
+      } else {
+      endIndex = stopMatch.index;
+      }
+    } else {
+      endIndex = stopMatch.index;
+    }
   }
 
   let content = remaining.slice(0, endIndex).trim();
